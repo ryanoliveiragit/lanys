@@ -11,7 +11,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Skeleton } from "@/components/ui/skeleton";
+
+import CSGORoulette from "@/components/shared/roulette";
 
 interface Equivalence {
   title: string;
@@ -22,13 +23,12 @@ interface Equivalence {
 export default function Home() {
   const targetDate = new Date(
     new Date().getFullYear(),
-    new Date().getMonth() - 1,
+    new Date().getMonth() - 2,
     4
   );
   const [equivalences, setEquivalences] = useState<Equivalence[]>([]);
   const [daysUntilSunday, setDaysUntilSunday] = useState(0);
-  const [daysUntilBirthday, setDaysUntilBirthday] = useState<number | null>(null);
-  const [isBirthday, setIsBirthday] = useState(false);
+
 
   // Função para calcular os dias até o próximo domingo
   const calculateDaysUntilSunday = () => {
@@ -38,27 +38,10 @@ export default function Home() {
     setDaysUntilSunday(daysUntilSunday);
   };
 
-  // Função para calcular os dias até o Aniversário
-  const calculateDaysUntilBirthday = () => {
-    const today = new Date();
-    const birthdayDate = new Date(today.getFullYear(), 11, 9); // 11 = Dezembro, 9 = dia do aniversário
 
-    // Verifica se hoje é dia 9 de dezembro
-    if (today.getDate() === 9 && today.getMonth() === 11) {
-      setIsBirthday(true);
-      setDaysUntilBirthday(null); // Remove o contador quando for aniversário
-    } else {
-      // Calcula dias restantes
-      const timeDiff = birthdayDate.getTime() - today.getTime();
-      const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-      setDaysUntilBirthday(days);
-      setIsBirthday(false);
-    }
-  };
 
   useEffect(() => {
     calculateDaysUntilSunday();
-    calculateDaysUntilBirthday();
 
     const updateEquivalences = () => {
       const currentTime = new Date();
@@ -156,21 +139,10 @@ export default function Home() {
           <CarouselNext className="-right-4" />
         </Carousel>
         
-        <div className="mt-8 flex flex-col items-center">
-          <h2 className="text-xl font-semibold mb-2">Presente de Aniversário 🎉✨</h2>
-          {isBirthday ? (
-            <div className="text-center text-lg font-bold text-green-500 mt-4">
-              Feliz Aniversário! 🎉✨ Aqui está seu presente especial!
-            </div>
-          ) : (
-            <p className="text-center text-sm text-black/60 relative">
-              Faltam <b>{daysUntilBirthday}</b> dias para o seu aniversário!
-              <p className="absolute right-0 w-full bottom-[11px] text-rose-900 font-medium z-20">carregando seu presente...</p>
-              <Skeleton className="h-10 w-[250px] mt-2 bg-rose-100" />
-            </p>
-          )}
-          <p className="text-sm text-muted-foreground mt-2"><b>obs: </b>Volte no dia para receber seu presente</p>
-        </div>
+       
+    
+      <CSGORoulette />
+
       </section>
     </div>
   );
